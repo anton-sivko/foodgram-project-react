@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
-from users.validators import username_me_denied
 
 
 class User(AbstractUser):
@@ -15,14 +14,25 @@ class User(AbstractUser):
     ]
 
     username = models.CharField(
+        verbose_name='Логин',
         max_length=settings.LIMIT_USERNAME,
         unique=True,
-        validators=[UnicodeUsernameValidator, username_me_denied],
+        validators=[UnicodeUsernameValidator],
         error_messages={
             'unique': "Пользователь с таким username уже существует",
         },
     )
+    password = models.CharField(
+        verbose_name='Логин',
+        max_length=settings.LIMIT_USERNAME,
+    )
+
+    is_active = models.BooleanField(
+        verbose_name='Активирован',
+        default=True,)
+
     email = models.EmailField(
+        verbose_name='Адрес электронной почты',
         max_length=settings.LIMIT_EMAIL,
         unique=True,
         error_messages={
@@ -34,17 +44,19 @@ class User(AbstractUser):
         choices=ROLE_CHOICES,
         default=USER
     )
-    first_name = models.CharField(max_length=settings.LIMIT_USERNAME,
-                                  blank=True)
-    bio = models.TextField(blank=True)
+    first_name = models.CharField(
+        verbose_name='Имя',
+        max_length=settings.LIMIT_USERNAME,
+        blank=True)
+
+    last_name = models.CharField(
+        verbose_name='Фамилия',
+        max_length=settings.LIMIT_USERNAME,
+        blank=True)
 
     @property
     def is_user(self):
         return self.role == self.USER
-
-    @property
-    def is_moderator(self):
-        return self.role == self.MODERATOR
 
     @property
     def is_admin(self):

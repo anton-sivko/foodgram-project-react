@@ -127,3 +127,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LIMIT_USERNAME = 150
 LIMIT_EMAIL = 254
+
