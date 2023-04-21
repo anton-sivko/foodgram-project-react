@@ -23,7 +23,7 @@ class User(AbstractUser):
         },
     )
     password = models.CharField(
-        verbose_name='Логин',
+        verbose_name='Пароль',
         max_length=settings.LIMIT_USERNAME,
     )
 
@@ -46,13 +46,13 @@ class User(AbstractUser):
     )
     first_name = models.CharField(
         verbose_name='Имя',
-        max_length=settings.LIMIT_USERNAME,
-        blank=True)
+        max_length=settings.LIMIT_USERNAME
+    )
 
     last_name = models.CharField(
         verbose_name='Фамилия',
-        max_length=settings.LIMIT_USERNAME,
-        blank=True)
+        max_length=settings.LIMIT_USERNAME
+    )
 
     @property
     def is_user(self):
