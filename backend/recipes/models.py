@@ -13,6 +13,9 @@ class Ingredient(models.Model):
         verbose_name='Единицы измерения'
         )
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class Tag(models.Model):
     name = models.CharField(
@@ -31,6 +34,9 @@ class Tag(models.Model):
             message='Допустимы латинские буквы, цифры, символы -_'),
             ]
         )
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Recipe(models.Model):
@@ -53,7 +59,8 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient,
         verbose_name='Ингредиенты',
-        related_name='recipes'
+        related_name='recipes',
+        through='IngredientAmount'
         )
     tags = models.ManyToManyField(
         Tag,
@@ -69,6 +76,9 @@ class Recipe(models.Model):
         verbose_name='Дата публикации',
         auto_now_add=True
         )
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class IngredientAmount(models.Model):
@@ -97,28 +107,30 @@ class IngredientAmount(models.Model):
         ]
 
 
-class Favorite(models.model):
+class Favorite(models.Model):
     favorite_recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
         related_name='favorite_recipe',
+        verbose_name='Избранный рецепт'
     )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='favorite'
+        related_name='favorite',
+        verbose_name='Пользователь'
     )
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['recipe', 'user'],
+                fields=['favorite_recipe', 'user'],
                 name='unique_favorite_recipe'
             )
         ]
 
 
-class ShoppingCart(models.model):
+class ShoppingCart(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -127,7 +139,7 @@ class ShoppingCart(models.model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='in_carts',
+        related_name='carts',
     )
 
     class Meta:
