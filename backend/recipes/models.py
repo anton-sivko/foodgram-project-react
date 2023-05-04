@@ -13,6 +13,10 @@ class Ingredient(models.Model):
         verbose_name='Единицы измерения'
         )
 
+    class Meta:
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
+
     def __str__(self) -> str:
         return self.name
 
@@ -34,6 +38,10 @@ class Tag(models.Model):
             message='Допустимы латинские буквы, цифры, символы -_'),
             ]
         )
+
+    class Meta:
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
 
     def __str__(self) -> str:
         return self.name
@@ -77,6 +85,10 @@ class Recipe(models.Model):
         auto_now_add=True
         )
 
+    class Meta:
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
+
     def __str__(self) -> str:
         return self.name
 
@@ -105,6 +117,8 @@ class IngredientAmount(models.Model):
                 name='unique_recipe_ingredient'
             )
         ]
+        verbose_name = 'Количество ингредиентов'
+        verbose_name_plural = 'Количество ингредиентов'
 
 
 class Favorite(models.Model):
@@ -128,18 +142,20 @@ class Favorite(models.Model):
                 name='unique_favorite_recipe'
             )
         ]
+        verbose_name = 'Избранный рецепт'
+        verbose_name_plural = 'Избранные рецепты'
 
 
 class ShoppingCart(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='carts'
+        related_name='user_carts'
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='carts',
+        related_name='recipe_carts',
     )
 
     class Meta:
@@ -149,3 +165,4 @@ class ShoppingCart(models.Model):
                 fields=('user', 'recipe'),
                 name='unique_recipe_in_cart')]
         verbose_name = 'Список покупок'
+        verbose_name_plural = 'Список покупок'

@@ -64,13 +64,14 @@ class User(AbstractUser):
 
     class Meta:
         ordering = ('id',)
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
 
     def __str__(self):
         return self.username
 
 
 class Subscription(models.Model):
-    """Модель для подписок."""
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -91,3 +92,5 @@ class Subscription(models.Model):
                 name='unique_subscribe'
             )
         ]
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'

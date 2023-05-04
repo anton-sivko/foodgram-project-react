@@ -126,7 +126,7 @@ DJOSER = {
     },
     'HIDE_USERS': False,
     'PERMISSIONS': {
-        'user': ['api.permissions.AdminOrReadOnly'],
+        'user': ['api.permissions.AdminOrAuthor_OrReadOnly'],
         'user_list': ['rest_framework.permissions.AllowAny'],
         'user_delete': ['rest_framework.permissions.IsAdminUser'],
     },

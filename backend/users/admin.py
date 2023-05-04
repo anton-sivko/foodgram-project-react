@@ -1,10 +1,11 @@
-from django.contrib import admin
 from django.contrib.admin import register
-from .models import User
+from django.contrib.auth.admin import UserAdmin
+from django.contrib import admin
+from .models import User, Subscription
 
 
-@register(User)
-class UserAdmin(admin.ModelAdmin):
+@admin.register(User)
+class UserAdmin(UserAdmin):
     list_display = ('id', 'is_active', 'username', 'password', 'email',
                     'first_name', 'last_name'
                     )
@@ -20,6 +21,11 @@ class UserAdmin(admin.ModelAdmin):
         'username', 'email',
     )
     list_filter = (
-        'is_active', 'first_name', 'email',
+        'first_name', 'email',
     )
     save_on_top = True
+
+
+@register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'user', 'author')
