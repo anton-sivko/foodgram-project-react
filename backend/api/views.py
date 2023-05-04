@@ -1,24 +1,23 @@
-from django.db.models import Sum
-from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from rest_framework import viewsets
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.decorators import action
-from django.http.response import HttpResponse
-from djoser.views import UserViewSet
-from recipes.models import (Ingredient, IngredientAmount, Recipe,
-                            Tag, Favorite, ShoppingCart)
-from users.models import User, Subscription
-from .serializers import (CustomUserSerializer, IngredientSerializer,
-                          RecipeWriteSerializer, RecipeReadSerializer,
-                          RecipeShortSerializer, SubscriptionSerializer,
-                          TagSerializer,
-                          )
 from api.filters import RecipeFilter
 from api.permissions import AdminOrAuthor_OrReadOnly
+from django.db.models import Sum
+from django.http.response import HttpResponse
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from djoser.views import UserViewSet
+from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
+                            ShoppingCart, Tag)
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import (SAFE_METHODS, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
-from rest_framework import status
+from rest_framework.response import Response
+from users.models import Subscription, User
+
+from .serializers import (CustomUserSerializer, IngredientSerializer,
+                          RecipeReadSerializer, RecipeShortSerializer,
+                          RecipeWriteSerializer, SubscriptionSerializer,
+                          TagSerializer)
 
 
 class CustomUserViewSet(UserViewSet):
@@ -67,7 +66,7 @@ class CustomUserViewSet(UserViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeWriteSerializer
-    permission_classes = (AdminOrAuthor_OrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filter_class = RecipeFilter
 
@@ -125,19 +124,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
         user = request.user
         file_name = 'Shopping_list.txt'
         shopping_list = []
-        if not user.carts.exists():
+        if not user.user_carts.exists():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         ingredients = (IngredientAmount.objects.filter(
             recipe__recipe_carts__user=user)
-            .values('ingredient')
-            .annotate(total=Sum('amount'))
-            .values_list('ingredient__name', 'total',
-                         'ingredient__measurement_unit')
-        )
-        for ingredient in ingredients:
-            shopping_list.append(
-                (f"{ingredient['name']} - {ingredient['amount']} "
-                 f"{ingredient['measurement']}"))
+            .values('ingredient__name', 'ingredient__measurement_unit')
+            .annotate(amount=Sum('amount')))
+        print(ingredients)
+        for i in ingredients:
+            print(i)
+            shopping_list.append(f'{i["ingredient__name"]}: {i["amount"]}'
+                                 f' {i["ingredient__measurement_unit"]}')
         response = HttpResponse(shopping_list,
                                 content_type='text.txt; charset=utf-8')
         response['Content-Disposition'] = f'attachment; filename={file_name}'
@@ -148,9 +145,11 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (AdminOrAuthor_OrReadOnly,)
+    pagination_class = None
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (AdminOrAuthor_OrReadOnly,)
+    pagination_class = None

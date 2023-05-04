@@ -1,8 +1,8 @@
-from rest_framework import serializers
 from drf_extra_fields.fields import Base64ImageField
-from users.models import Subscription, User
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
                             ShoppingCart, Tag)
+from rest_framework import serializers
+from users.models import Subscription, User
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -114,7 +114,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             )
 
     def create(self, validated_data):
-        tags = validated_data.pop('tag')
+        tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
         recipe = Recipe.objects.create(**validated_data)
         self.create_ingredients(ingredients, recipe)
