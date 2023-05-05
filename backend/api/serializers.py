@@ -1,8 +1,8 @@
+from rest_framework import serializers
 from drf_extra_fields.fields import Base64ImageField
+from users.models import Subscription, User
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
                             ShoppingCart, Tag)
-from rest_framework import serializers
-from users.models import Subscription, User
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -58,7 +58,7 @@ class IngredientAddSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('__all__')
+        fields = '__all__'
 
 
 class RecipeShortSerializer(serializers.ModelSerializer):
@@ -140,7 +140,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ('__all__')
+        fields = '__all__'
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):

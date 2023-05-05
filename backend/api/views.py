@@ -27,9 +27,9 @@ class CustomUserViewSet(UserViewSet):
 
     @action(detail=True, methods=['post', 'delete'],
             url_path='subscribe', url_name='subscribe')
-    def subscribe(self, request, id):
+    def subscribe(self, request, pk):
         user = request.user
-        author = get_object_or_404(User, id=id)
+        author = get_object_or_404(User, pk=pk)
         if user == author:
             return Response({'errors': 'Подписаться на себя нельзя'},
                             status=status.HTTP_400_BAD_REQUEST)
@@ -81,7 +81,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post', 'delete'],
             url_path='favorite', url_name='favorite')
     def favorite(self, request, pk=None):
-        recipe = get_object_or_404(Recipe, id=pk)
+        recipe = get_object_or_404(Recipe, pk=pk)
         user = request.user
         if request.method == 'POST':
             serializer = RecipeShortSerializer(recipe, data=request.data,
@@ -101,7 +101,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             permission_classes=(IsAuthenticated,),
             url_path='shopping_cart', url_name='shopping_cart')
     def shopping_cart(self, request, pk=None):
-        recipe = get_object_or_404(Recipe, id=pk)
+        recipe = get_object_or_404(Recipe, pk=pk)
         user = request.user
         if request.method == 'POST':
             serializer = RecipeShortSerializer(recipe, data=request.data,
