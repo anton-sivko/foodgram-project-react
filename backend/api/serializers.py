@@ -62,7 +62,6 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class RecipeShortSerializer(serializers.ModelSerializer):
-    image = Base64ImageField()
 
     class Meta:
         model = Recipe
@@ -157,6 +156,11 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         model = Subscription
         fields = ('id', 'username', 'first_name', 'last_name',
                   'email', 'recipes', 'recipes_count', 'is_subscribed')
+
+    def get_is_subscribed(self, obj):
+        user = self.context.get('request').user
+        return Subscription.objects.filter(user=user,
+                                           author=obj.author).exists()
 
     def get_recipes(self, obj):
         recipes_limit = self.context.get('request').GET.get('recipes_limit')

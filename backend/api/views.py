@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db.models import Sum
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -26,25 +27,24 @@ class CustomUserViewSet(UserViewSet):
 
     @action(detail=True, methods=['post', 'delete'],
             url_path='subscribe', url_name='subscribe')
-    def subscribe(self, request, pk):
+    def subscribe(self, request, id):
         user = request.user
-        author = get_object_or_404(User, pk=pk)
+        author = get_object_or_404(User, id=id)
         if user == author:
             return Response({'errors': 'Подписаться на себя нельзя'},
                             status=status.HTTP_400_BAD_REQUEST)
         subscription = Subscription.objects.filter(
             user=user, author=author)
         if request.method == 'POST':
-            if subscription.exists:
+            if subscription.exists():
                 return Response({'errors': 'Подписка уже существует'},
                                 status=status.HTTP_400_BAD_REQUEST)
             queryset = Subscription.objects.create(user=user, author=author)
             serializer = SubscriptionSerializer(queryset,
                                                 context={'request': request})
-            serializer.is_valid(raise_exception=True)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         if request.method == 'DELETE':
-            if not subscription.exists:
+            if not subscription.exists():
                 return Response({'errors': 'Подписка отсутствует'},
                                 status=status.HTTP_400_BAD_REQUEST)
             subscription.delete()
@@ -87,13 +87,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
                                                context={'request': request})
             serializer.is_valid(raise_exception=True)
             if Favorite.objects.filter(user=user,
-                                       recipe=recipe).exists():
+                                       favorite_recipe=recipe).exists():
                 return Response({'errors': 'Рецепт уже добавлен в избранное.'},
                                 status=status.HTTP_400_BAD_REQUEST)
-            Favorite.objects.create(user=user, recipe=recipe)
+            Favorite.objects.create(user=user, favorite_recipe=recipe)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         if request.method == 'DELETE':
-            get_object_or_404(Favorite, recipe=recipe, user=user).delete()
+            get_object_or_404(Favorite,
+                              favorite_recipe=recipe, user=user).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['post', 'delete'],
@@ -122,7 +123,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def download_shopping_cart(self, request, **kwargs):
         user = request.user
         file_name = 'Shopping_list.txt'
-        shopping_list = []
+        date = datetime.date(datetime.now())
+        shopping_list = f'Список покупок от {date}\n'
         if not user.user_carts.exists():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         ingredients = (IngredientAmount.objects.filter(
@@ -131,9 +133,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             .annotate(amount=Sum('amount')))
         print(ingredients)
         for i in ingredients:
-            print(i)
-            shopping_list.append(f'{i["ingredient__name"]}: {i["amount"]}'
-                                 f' {i["ingredient__measurement_unit"]}')
+            shopping_list += (f'{i["ingredient__name"]}: {i["amount"]}'
+                              f' {i["ingredient__measurement_unit"]}\n')
         response = HttpResponse(shopping_list,
                                 content_type='text.txt; charset=utf-8')
         response['Content-Disposition'] = f'attachment; filename={file_name}'
