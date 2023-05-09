@@ -1,3 +1,4 @@
+
 from datetime import datetime
 from django.db.models import Sum
 from django.http.response import HttpResponse
@@ -9,7 +10,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import (SAFE_METHODS, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-from api.filters import RecipeFilter
+from api.filters import IngredientFilter, RecipeFilter
 from api.permissions import AdminOrAuthor_OrReadOnly
 from api.serializers import (CustomUserSerializer, IngredientSerializer,
                              RecipeReadSerializer, RecipeShortSerializer,
@@ -146,6 +147,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = IngredientSerializer
     permission_classes = (AdminOrAuthor_OrReadOnly,)
     pagination_class = None
+    filterset_class = IngredientFilter
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):

@@ -8,13 +8,13 @@ services:
       - ./.env
 
   backend:
-    # image: asivko/foodgram_backend:latest
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+    image: asivko/foodgram_backend:latest
+    # build:
+    #   context: ../backend
+    #   dockerfile: Dockerfile
     restart: always
     volumes:
-      - static_backend_value:/app/static/
+      - static_backend_value:/app/static_backend/
       - media_value:/app/media/
     depends_on:
       - db
@@ -22,10 +22,10 @@ services:
       - ./.env
 
   frontend:
-    # image: asivko/foodgram_frontend:latest
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: asivko/foodgram_frontend:latest
+    # build:
+    #   context: ../frontend
+    #   dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
