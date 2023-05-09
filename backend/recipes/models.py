@@ -7,11 +7,11 @@ class Ingredient(models.Model):
     name = models.CharField(
         max_length=200,
         verbose_name='Название ингредиента'
-        )
+    )
     measurement_unit = models.CharField(
         max_length=200,
         verbose_name='Единицы измерения'
-        )
+    )
 
     class Meta:
         verbose_name = 'Ингредиент'
@@ -25,19 +25,19 @@ class Tag(models.Model):
     name = models.CharField(
         max_length=200,
         verbose_name='Тег'
-        )
+    )
     color = models.CharField(
         max_length=7,
         verbose_name='Цвет'
-        )
+    )
     slug = models.SlugField(
         max_length=200,
         unique=True,
         validators=[RegexValidator(
             regex=r'^[-a-zA-Z0-9_]+$',
             message='Допустимы латинские буквы, цифры, символы -_'),
-            ]
-        )
+        ]
+    )
 
     class Meta:
         verbose_name = 'Тег'
@@ -52,15 +52,15 @@ class Recipe(models.Model):
         User, on_delete=models.CASCADE,
         related_name='recipes',
         verbose_name='Автор рецепта'
-        )
+    )
     name = models.CharField(
         max_length=200,
         verbose_name='Название рецепта'
-        )
+    )
     image = models.ImageField(
         upload_to='recipes/',
         null=True, blank=True
-        )
+    )
     text = models.CharField(
         max_length=2000,
         verbose_name='Описание рецепта')
@@ -69,7 +69,7 @@ class Recipe(models.Model):
         verbose_name='Ингредиенты',
         related_name='recipes',
         through='IngredientAmount'
-        )
+    )
     tags = models.ManyToManyField(
         Tag,
         verbose_name='Тег рецепта',
@@ -82,8 +82,7 @@ class Recipe(models.Model):
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
-        auto_now_add=True
-        )
+        auto_now_add=True)
 
     class Meta:
         verbose_name = 'Рецепт'

@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -9,8 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', default='secret_key')
 
-# DEBUG = int(os.getenv('DEBUG', default=0))
-DEBUG = True
+DEBUG = int(os.getenv('DEBUG', default=0))
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='*').split(',')
 
@@ -64,9 +64,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
@@ -78,9 +75,6 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -119,7 +113,7 @@ DJOSER = {
     },
     'HIDE_USERS': False,
     'PERMISSIONS': {
-        'user': ['api.permissions.AdminOrAuthor_OrReadOnly'],
+        'user': ['api.permissions.AdminOrAuthorOrReadOnly'],
         'user_list': ['rest_framework.permissions.AllowAny'],
         'user_delete': ['rest_framework.permissions.IsAdminUser'],
     },

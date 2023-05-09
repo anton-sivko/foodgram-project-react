@@ -11,9 +11,9 @@ class RecipeFilter(FilterSet):
                                      )
     author = filters.ModelChoiceFilter(queryset=User.objects.all())
     is_favorited = filters.BooleanFilter(
-                                        method='filter_in_favorite')
+        method='filter_in_favorite')
     is_in_shopping_cart = filters.BooleanFilter(
-                                        method='filter_in_shopping_cart')
+        method='filter_in_shopping_cart')
 
     def filter_in_favorite(self, queryset, name, value):
         if value:

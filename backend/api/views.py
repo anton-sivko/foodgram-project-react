@@ -1,5 +1,5 @@
-
 from datetime import datetime
+
 from django.db.models import Sum
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -10,12 +10,14 @@ from rest_framework.decorators import action
 from rest_framework.permissions import (SAFE_METHODS, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
+
 from api.filters import IngredientFilter, RecipeFilter
-from api.permissions import AdminOrAuthor_OrReadOnly
+from api.permissions import AdminOrAuthorOrReadOnly
 from api.serializers import (CustomUserSerializer, IngredientSerializer,
                              RecipeReadSerializer, RecipeShortSerializer,
                              RecipeWriteSerializer, SubscriptionSerializer,
                              TagSerializer)
+
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
                             ShoppingCart, Tag)
 from users.models import Subscription, User
@@ -145,7 +147,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = (AdminOrAuthor_OrReadOnly,)
+    permission_classes = (AdminOrAuthorOrReadOnly,)
     pagination_class = None
     filterset_class = IngredientFilter
 
@@ -153,5 +155,5 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (AdminOrAuthor_OrReadOnly,)
+    permission_classes = (AdminOrAuthorOrReadOnly,)
     pagination_class = None
