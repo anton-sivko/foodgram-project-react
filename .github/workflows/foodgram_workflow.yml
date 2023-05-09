@@ -40,6 +40,7 @@ jobs:
             push: true
             tags: asivko/foodgram_backend:latest
             file: backend/Dockerfile
+            context: ./backend
 
   deploy:
       runs-on: ubuntu-latest
