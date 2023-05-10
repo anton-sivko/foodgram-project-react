@@ -54,7 +54,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker-compose down -v
+            sudo docker-compose down
             sudo docker image rm asivko/foodgram_backend:latest
             rm .env
             touch .env
