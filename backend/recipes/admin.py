@@ -7,6 +7,7 @@ from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
 @register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'author')
+    search_fields = ('name', )
     fields = (
         'name', 'cooking_time', 'text', 'tags',
         'image', 'author', 'in_favorites'

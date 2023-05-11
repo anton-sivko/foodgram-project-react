@@ -105,6 +105,16 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = '__all__'
 
+    def validate(self, data):
+        ingredients = data.get('ingredients')
+        for ingredient in ingredients:
+            amount = int(ingredient.get('amount'))
+            if amount < 1:
+                raise serializers.ValidationError({
+                    'amount': 'Минимальное количество ингридиента 1'
+                })
+        return data
+
     def create_ingredients(self, ingredients, recipe):
         for ingredient in ingredients:
             IngredientAmount.objects.bulk_create(
